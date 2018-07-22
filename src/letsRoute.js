@@ -109,10 +109,21 @@ Anumargak.prototype.__on = function (method, url, fn, params) {
             this.staticRoutes[method][url] = { fn: fn, params: params };
         }
         if (this.ignoreLeadingSlash) {
-            if (url.startsWith("/") === false) {
+            if (url.startsWith("/")) {
+                url = url.substr(1, url.length);
+            } else {
                 url = "/" + url;
             }
             this.staticRoutes[method][url] = { fn: fn, params: params };
+
+            if (this.ignoreTrailingSlash) {
+                if (url.endsWith("/")) {
+                    url = url.substr(0, url.length - 1);
+                } else {
+                    url = url + "/";
+                }
+                this.staticRoutes[method][url] = { fn: fn, params: params };
+            }
         }
     }
 }
@@ -304,7 +315,7 @@ function Anumargak(options) {
             this.defaultFn = options.defaultRoute;
         }
         this.ignoreTrailingSlash = options.ignoreTrailingSlash || false;
-        this.ignoreLeadingSlash = options.ignoreLeadingSlash || true;
+        this.ignoreLeadingSlash = (options.ignoreLeadingSlash === undefined) ? true : options.ignoreLeadingSlash;
         this.overwriteAllow = options.overwriteAllow || false;
     }
 }
