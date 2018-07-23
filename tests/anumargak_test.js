@@ -307,6 +307,7 @@ describe("Anumargak ", function () {
         expect(anumargak.find("GET", "/this/is/static/")()).toEqual(50);
         expect(anumargak.find("GET", "/this/is/other/static")()).toEqual(70);
         expect(anumargak.find("GET", "/this/is/other/static/")()).toEqual(70);
+        expect(anumargak.count).toEqual(3);
     });
 
     it("should return default route", function () {
