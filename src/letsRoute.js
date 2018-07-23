@@ -30,6 +30,12 @@ Anumargak.prototype._on = function (method, url, fn) {
     if (httpMethods.indexOf(method) === -1) throw Error("Invalid method type " + method);
     this.count += 1;
 
+    if (this.ignoreLeadingSlash) {
+        if (url.startsWith("/") === false) {
+            url = "/" + url;
+        }
+    }
+
     var matches = getFirstMatche(url, wildcardRegexStr);
     if (matches) {
         url = url.substr(0, matches.index + 1) + ":*(" + matches[0].substr(1, matches[0].length - 2) + ".*)"
@@ -88,21 +94,11 @@ Anumargak.prototype.__on = function (method, url, fn, params) {
                     url = url + "/?";
                 }
             }
-            if (this.ignoreLeadingSlash) {
-                if (url.startsWith("/") === false) {
-                    url = "/" + url;
-                }
-            }
         }
         var regex = new RegExp("^" + url + "$");
         this.checkIffRegistered(this.dynamicRoutes, method, url);
         this.dynamicRoutes[method][url] = { regex: regex, fn: fn, params: params || {}, paramsArr: paramsArr };
     } else {//STATIC
-        if (this.ignoreLeadingSlash) {
-            if (url.startsWith("/") === false) {
-                url = "/" + url;
-            }
-        }
         this.checkIffRegistered(this.staticRoutes, method, url);
         this.staticRoutes[method][url] = { fn: fn, params: params };
         if (this.ignoreTrailingSlash) {
